@@ -16,7 +16,7 @@ import Router from "koa-router";
 import { verifyAppProxyExtensionSignature } from "./utilities";
 
 dotenv.config();
-const port = parseInt(process.env.PORT, 10) || 8081;
+// const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== "production";
 const app = next({
   dev,
@@ -256,7 +256,7 @@ app.prepare().then(async () => {
 
   server.use(router.allowedMethods());
   server.use(router.routes());
-  server.listen(port, () => {
-    console.log(`> Ready on http://localhost:${port}`);
+  server.listen(process.env.PORT || 3000, () => {
+    console.log(`> Ready on http://localhost:${process.env.PORT || 3000}`);
   });
 });
