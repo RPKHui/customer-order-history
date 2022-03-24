@@ -1,0 +1,37 @@
+<div>
+    <p id="customer-data" data-customer-id="{{ customer.id }}">Hello world</p>
+    <div id="date-picker"></div>
+    <table id="cust-order-table">
+      <thead>
+        <tr>
+          <th scope="col">Order Number</th>
+          <th scope="col">Order Date</th>
+          <th scope="col">Delivery Date</th>
+          <th scope="col">Payment Status</th>
+          <th scope="col">Fulfillment Status</th>
+          <th scope="col">Total</th>
+          <th scope="col">Delivery Address</th>
+          <th scope="col">Refund Amount</th>
+          <th scope="col">Note</th>
+        </tr>
+      </thead>
+    </table>
+    <div id="nav_btns"></div>
+    <div id="empty-order-msg"></div>
+    <script src="{{ 'get-customer-orders.js' | asset_url }}" defer></script>
+</div>
+
+{% schema %}
+{
+    "name" : "Customer Orders",
+    "target": "section",
+    "settings" : [
+      {
+        "type": "number",
+        "id": "number_test",
+        "label": "Number Test",
+        "default": 12
+      }
+    ]
+}
+{% endschema %}
