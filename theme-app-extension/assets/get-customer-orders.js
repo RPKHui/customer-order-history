@@ -379,6 +379,7 @@
     const result = await customerOrders.json();
 
     const { orders, orderData } = result;
+    console.log(orders);
     console.log(orderData);
 
     // if there are no orders on that date

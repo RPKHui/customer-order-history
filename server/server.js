@@ -200,6 +200,9 @@ app.prepare().then(async () => {
             ...ctx.request.body,
           });
 
+      // if orders are empty then we don't have to
+      // fetch the order status urls and append them
+      console.log(orders);
       const legacyResourceIds = [];
       // extract the legacyResource ids from the order
       for (let i = 0; i < orders.edges.length; i++) {
