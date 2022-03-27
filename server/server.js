@@ -218,15 +218,16 @@ app.prepare().then(async () => {
       );
 
       const orderData = await orderUrls.json();
+      console.log(orderData);
 
       // append order status url to the graphql return object
-      for (let i = 0; i < orderData.orders.length; i++) {
-        let order = orders.edges.find(
-          (edge) =>
-            edge.node.legacyResourceId === orderData.orders[i].id.toString()
-        );
-        order.node.orderStatusUrl = orderData.orders[i]["order_status_url"];
-      }
+      // for (let i = 0; i < orderData.orders.length; i++) {
+      //   let order = orders.edges.find(
+      //     (edge) =>
+      //       edge.node.legacyResourceId === orderData.orders[i].id.toString()
+      //   );
+      //   order.node.orderStatusUrl = orderData.orders[i]["order_status_url"];
+      // }
 
       // return using ctx.body and settings the ctx.res.statusCode to 200
       ctx.body = JSON.stringify({
