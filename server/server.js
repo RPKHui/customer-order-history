@@ -202,35 +202,37 @@ app.prepare().then(async () => {
 
       // if orders are empty then we don't have to
       // fetch the order status urls and append them
-      console.log(orders);
-      const legacyResourceIds = [];
-      // extract the legacyResource ids from the order
-      for (let i = 0; i < orders.edges.length; i++) {
-        legacyResourceIds.push(orders.edges[i].node.legacyResourceId);
+      let orderData;
+
+      if (orders.edges.length > 0) {
+        const legacyResourceIds = [];
+        // extract the legacyResource ids from the order
+        for (let i = 0; i < orders.edges.length; i++) {
+          legacyResourceIds.push(orders.edges[i].node.legacyResourceId);
+        }
+
+        const legacyResourceIdsString = legacyResourceIds.join(",");
+
+        const orderUrls = await fetch(
+          `https://${session.shop}/admin/api/2019-10/orders.json?` +
+            new URLSearchParams({
+              ids: legacyResourceIdsString,
+              fields: "id,order_status_url",
+            }),
+          fetchOptions
+        );
+
+        orderData = await orderUrls.json();
+
+        // append order status url to the graphql return object
+        for (let i = 0; i < orderData.orders.length; i++) {
+          let order = orders.edges.find(
+            (edge) =>
+              edge.node.legacyResourceId === orderData.orders[i].id.toString()
+          );
+          order.node.orderStatusUrl = orderData.orders[i]["order_status_url"];
+        }
       }
-
-      const legacyResourceIdsString = legacyResourceIds.join(",");
-
-      const orderUrls = await fetch(
-        `https://${session.shop}/admin/api/2019-10/orders.json?` +
-          new URLSearchParams({
-            ids: legacyResourceIdsString,
-            fields: "id,order_status_url",
-          }),
-        fetchOptions
-      );
-
-      const orderData = await orderUrls.json();
-      console.log(orderData);
-
-      // append order status url to the graphql return object
-      // for (let i = 0; i < orderData.orders.length; i++) {
-      //   let order = orders.edges.find(
-      //     (edge) =>
-      //       edge.node.legacyResourceId === orderData.orders[i].id.toString()
-      //   );
-      //   order.node.orderStatusUrl = orderData.orders[i]["order_status_url"];
-      // }
 
       // return using ctx.body and settings the ctx.res.statusCode to 200
       ctx.body = JSON.stringify({

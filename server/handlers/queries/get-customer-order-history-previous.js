@@ -3,7 +3,7 @@ import { gql } from "apollo-boost";
 
 const GET_CUSTOMER_ORDER_HISTORY = gql`
   query GetCustomerOrderHistory($query: String!, $cursor: String) {
-    orders(last: 2, query: $query, before: $cursor) {
+    orders(last: 10, query: $query, before: $cursor) {
       pageInfo {
         hasNextPage
         hasPreviousPage
