@@ -378,9 +378,7 @@
     );
     const result = await customerOrders.json();
 
-    const { orders, orderData } = result;
-    console.log(orders);
-    console.log(orderData);
+    const { orders } = result;
 
     // if there are no orders on that date
     if (orders.edges.length == 0) {
@@ -407,8 +405,6 @@
     // setting the cursors in the session storage
     sessionStorage.setItem("firstCursor", firstOrder.cursor);
     sessionStorage.setItem("lastCursor", lastOrder.cursor);
-
-    console.log(orders);
 
     // create a delivery date field
     for (let i = 0; i < orders.edges.length; i++) {
@@ -442,8 +438,6 @@
 
   // clean the cursors from the session storage
   clearSessionStorage();
-
-  console.log("hello worlds");
 
   // build the date picker first
   createDatePicker();
