@@ -48,21 +48,21 @@ app.prepare().then(async () => {
   const server = new Koa();
   const router = new Router();
   server.keys = [Shopify.Context.API_SECRET_KEY];
-  server.use(
-    createShopifyAuth({
-      accessMode: "online",
-      prefix: "/online",
-      async afterAuth(ctx) {
-        // Online access mode access token and shop available in ctx.state.shopify
-        const { shop } = ctx.state.shopify;
+  // server.use(
+  //   createShopifyAuth({
+  //     accessMode: "online",
+  //     prefix: "/online",
+  //     async afterAuth(ctx) {
+  //       // Online access mode access token and shop available in ctx.state.shopify
+  //       const { shop } = ctx.state.shopify;
 
-        // Redirect to app with shop parameter upon auth
-        ctx.redirect(
-          `https://${shop}/admin/apps/${process.env.SHOPIFY_API_KEY}`
-        );
-      },
-    })
-  );
+  //       // Redirect to app with shop parameter upon auth
+  //       ctx.redirect(
+  //         `https://${shop}/admin/apps/${process.env.SHOPIFY_API_KEY}`
+  //       );
+  //     },
+  //   })
+  // );
 
   // Shopify API "offline" access mode tokens are meant for long term access to a store,
   // where no user interaction is involved is ideal for background work in response to webhooks,
@@ -94,7 +94,9 @@ app.prepare().then(async () => {
 
         // Redirect to online auth entry point to create
         // an online access mode token that will be used by the embedded app
-        ctx.redirect(`/online/auth/?shop=${shop}`);
+        ctx.redirect(
+          `https://${shop}/admin/apps/${process.env.SHOPIFY_API_KEY}`
+        );
       },
     })
   );
@@ -140,7 +142,7 @@ app.prepare().then(async () => {
 
   router.post(
     "/graphql",
-    verifyRequest({ returnHeader: true }),
+    verifyRequest({ accessMode: "offline", returnHeader: true }),
     async (ctx, next) => {
       await Shopify.Utils.graphqlProxy(ctx.req, ctx.res);
     }
@@ -202,8 +204,6 @@ app.prepare().then(async () => {
 
       // if orders are empty then we don't have to
       // fetch the order status urls and append them
-      let orderData;
-
       if (orders.edges.length > 0) {
         const legacyResourceIds = [];
         // extract the legacyResource ids from the order
@@ -222,7 +222,7 @@ app.prepare().then(async () => {
           fetchOptions
         );
 
-        orderData = await orderUrls.json();
+        const orderData = await orderUrls.json();
 
         // append order status url to the graphql return object
         for (let i = 0; i < orderData.orders.length; i++) {
@@ -238,7 +238,6 @@ app.prepare().then(async () => {
       ctx.body = JSON.stringify({
         tags,
         orders,
-        orderData,
       });
       ctx.res.statusCode = 200;
     } catch (err) {

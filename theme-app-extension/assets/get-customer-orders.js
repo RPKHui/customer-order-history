@@ -148,7 +148,9 @@
 
     // delivery address
     const { address1, address2, formattedArea } = order.shippingAddress;
-    const formattedAddress = `${address2}/${address1}\n${formattedArea}`;
+    const formattedAddress = `${
+      address2 ? address2 + " " : ""
+    }${address1}\n${formattedArea}`;
 
     create({
       tag: "td",
