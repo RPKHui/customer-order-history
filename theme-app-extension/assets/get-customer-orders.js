@@ -58,10 +58,16 @@
 
     // create anchor tag for order number to link
     // to order status page for that order
+
+    const {orderStatusUrl} = order
+    const orderReceiptId = orderStatusUrl.slice(-1)[0]
+
+    const orderReceiptUrl = "https://doodel.com.au/account/orders/" + orderReceiptId
+
     const orderStatusAnchor = create({
       tag: "a",
       attributes: {
-        href: order.orderStatusUrl,
+        href: orderReceiptUrl,
         target: "_blank",
         textContent: order.name,
       },
